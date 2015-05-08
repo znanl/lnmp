@@ -7,11 +7,13 @@
 
 export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 clear
-echo "#######################################################################"
-echo "#         LNMP for CentOS/RadHat 5+ Debian 6+ and Ubuntu 12+          #"
-echo "#                           Uninstall LNMP                            #"
-echo "# For more information Please visit http://blog.linuxeye.com/31.html  #"
-echo "#######################################################################"
+printf "
+#######################################################################
+#    LNMP/LAMP/LANMP for CentOS/RadHat 5+ Debian 6+ and Ubuntu 12+    #
+#                           Uninstall LNMP                            #
+# For more information please visit http://blog.linuxeye.com/31.html  #
+#######################################################################
+"
 . ./options.conf
 
 Uninstall()
@@ -19,10 +21,12 @@ Uninstall()
 [ -e "$db_install_dir" ] && service mysqld stop && rm -rf /etc/init.d/mysqld /etc/my.cnf /etc/ld.so.conf.d/mysql.conf /usr/include/mysql
 [ -e "$apache_install_dir" ] && service httpd stop && rm -rf /etc/init.d/httpd
 [ -e "$php_install_dir" ] && service php-fpm stop && rm -rf /etc/init.d/php-fpm
-[ -e "$web_install_dir" ] && service nginx stop && rm -rf /etc/init.d/nginx /etc/logrotate.d/nginx /var/ngx_pagespeed_cache
+[ -e "$web_install_dir" ] && service nginx stop && rm -rf /etc/init.d/nginx /etc/logrotate.d/nginx
 [ -e "$pureftpd_install_dir" ] && service pureftpd stop && rm -rf /etc/init.d/pureftpd
 [ -e "$redis_install_dir" ] && service redis-server stop && rm -rf /etc/init.d/redis-server
 [ -e "$memcached_install_dir" ] && service memcached stop && rm -rf /etc/init.d/memcached
+[ -e "/usr/local/imagemagick" ] && rm -rf /usr/local/imagemagick 
+[ -e "/usr/local/graphicsmagick" ] && rm -rf /usr/local/graphicsmagick 
 
 /bin/mv ${home_dir}{,_$(date +%F)}
 /bin/mv ${db_data_dir}{,_$(date +%F)}
@@ -68,6 +72,8 @@ done
 [ -e "$pureftpd_install_dir" ] && echo '/etc/init.d/pureftpd'
 [ -e "$memcached_install_dir" ] && echo '/etc/init.d/memcached' 
 [ -e "$redis_install_dir" ] && echo '/etc/init.d/redis-server' 
+[ -e "/usr/local/imagemagick" ] && echo '/usr/local/imagemagick' 
+[ -e "/usr/local/graphicsmagick" ] && echo '/usr/local/graphicsmagick' 
 echo 
 echo "Press Ctrl+c to cancel or Press any key to continue..."
 char=`get_char`
@@ -83,4 +89,4 @@ do
         fi
 done
 
-[ "$uninstall_yn" == 'y' ] && Uninstall 
+[ "$uninstall_yn" == 'y' ] && Uninstall

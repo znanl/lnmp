@@ -12,7 +12,7 @@ cd $lnmp_dir/src
 src_url=http://downloads.sourceforge.net/project/pcre/pcre/8.36/pcre-8.36.tar.gz && Download_src
 src_url=http://archive.apache.org/dist/apr/apr-1.5.1.tar.gz && Download_src 
 src_url=http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.gz && Download_src 
-src_url=http://www.apache.org/dist/httpd/httpd-2.4.10.tar.gz && Download_src 
+src_url=http://www.apache.org/dist/httpd/httpd-2.4.12.tar.gz && Download_src 
 
 tar xzf pcre-8.36.tar.gz
 cd pcre-8.36
@@ -21,10 +21,10 @@ make && make install
 cd ../
 
 useradd -M -s /sbin/nologin www
-tar xzf httpd-2.4.10.tar.gz
+tar xzf httpd-2.4.12.tar.gz
 tar xzf apr-1.5.1.tar.gz
 tar xzf apr-util-1.5.4.tar.gz
-cd httpd-2.4.10
+cd httpd-2.4.12
 /bin/cp -R ../apr-1.5.1 ./srclib/apr
 /bin/cp -R ../apr-util-1.5.4 ./srclib/apr-util
 ./configure --prefix=$apache_install_dir --enable-headers --enable-deflate --enable-mime-magic --enable-so --enable-rewrite --enable-ssl --with-ssl --enable-expires --enable-static-support --enable-suexec --disable-userdir --with-included-apr --with-mpm=prefork --disable-userdir
@@ -40,7 +40,7 @@ fi
 . /etc/profile
 
 cd ..
-/bin/rm -rf httpd-2.4.10
+[ -d "$apache_install_dir" ] && /bin/rm -rf httpd-2.4.12
 /bin/cp $apache_install_dir/bin/apachectl  /etc/init.d/httpd
 sed -i '2a # chkconfig: - 85 15' /etc/init.d/httpd
 sed -i '3a # description: Apache is a World Wide Web server. It is used to serve' /etc/init.d/httpd
@@ -125,5 +125,8 @@ EOF
 	sed -i "s@LogFormat \"%h %l@LogFormat \"%h %a %l@g" $apache_install_dir/conf/httpd.conf
 fi
 cd ..
+[ "$Nginx_version" == '3' -a "$Apache_version" != '3' ] && sed -i "s@^web_install_dir.*@web_install_dir=$apache_install_dir@" options.conf
+sed -i "s@/home/wwwroot@$home_dir@g" vhost.sh
+sed -i "s@/home/wwwlogs@$wwwlogs_dir@g" vhost.sh
 service httpd start
 }

@@ -1,6 +1,7 @@
 #!/bin/bash
 # Author:  yeho <lj2007331 AT gmail.com>
 # Blog:  http://blog.linuxeye.com
+
 Install_MySQL-5-5()
 {
 cd $lnmp_dir/src
@@ -8,12 +9,12 @@ cd $lnmp_dir/src
 . ../functions/check_os.sh
 . ../options.conf
 
-src_url=http://cdn.mysql.com/Downloads/MySQL-5.5/mysql-5.5.41.tar.gz && Download_src
+src_url=http://cdn.mysql.com/Downloads/MySQL-5.5/mysql-5.5.43.tar.gz && Download_src
 
 useradd -M -s /sbin/nologin mysql
 mkdir -p $mysql_data_dir;chown mysql.mysql -R $mysql_data_dir
-tar zxf mysql-5.5.41.tar.gz
-cd mysql-5.5.41
+tar zxf mysql-5.5.43.tar.gz
+cd mysql-5.5.43
 if [ "$je_tc_malloc" == '1' ];then
         EXE_LINKER="-DCMAKE_EXE_LINKER_FLAGS='-ljemalloc'"
 elif [ "$je_tc_malloc" == '2' ];then
@@ -36,7 +37,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=$mysql_install_dir \
 -DDEFAULT_COLLATION=utf8_general_ci \
 -DWITH_EMBEDDED_SERVER=1 \
 $EXE_LINKER
-make && make install
+make -j `grep processor /proc/cpuinfo | wc -l` 
+make install
 
 if [ -d "$mysql_install_dir" ];then
         echo -e "\033[32mMySQL install successfully! \033[0m"
@@ -52,7 +54,7 @@ chkconfig mysqld on'
 OS_Debian_Ubuntu='update-rc.d mysqld defaults'
 OS_command
 cd ..
-/bin/rm -rf mysql-5.5.41
+[ -d "$mysql_install_dir" ] && /bin/rm -rf mysql-5.5.43
 cd ..
 
 # my.cf

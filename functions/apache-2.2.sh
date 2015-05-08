@@ -27,7 +27,7 @@ fi
 . /etc/profile
 
 cd ..
-/bin/rm -rf httpd-2.2.29
+[ -d "$apache_install_dir" ] && /bin/rm -rf httpd-2.2.29
 /bin/cp $apache_install_dir/bin/apachectl  /etc/init.d/httpd
 sed -i '2a # chkconfig: - 85 15' /etc/init.d/httpd
 sed -i '3a # description: Apache is a World Wide Web server. It is used to serve' /etc/init.d/httpd
@@ -115,5 +115,8 @@ EOF
 	cd ..
 fi
 cd ..
+[ "$Nginx_version" == '3' -a "$Apache_version" != '3' ] && sed -i "s@^web_install_dir.*@web_install_dir=$apache_install_dir@" options.conf
+sed -i "s@/home/wwwroot@$home_dir@g" vhost.sh
+sed -i "s@/home/wwwlogs@$wwwlogs_dir@g" vhost.sh
 service httpd start
 }
